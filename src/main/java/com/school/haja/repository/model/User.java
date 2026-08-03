@@ -34,8 +34,7 @@ public class User {
   @Column(nullable = false)
   private String password;
 
-  @Column
-  private String phone;
+  @Column private String phone;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
