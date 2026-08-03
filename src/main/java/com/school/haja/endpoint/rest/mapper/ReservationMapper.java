@@ -59,6 +59,7 @@ public class ReservationMapper {
               .findById(rest.getSeatId())
               .orElseThrow(() -> new NotFoundException("Seat not found: " + rest.getSeatId()));
     }
+
     return Reservation.builder()
         .id(rest.getId())
         .createdAt(rest.getCreatedAt())
