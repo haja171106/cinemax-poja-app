@@ -3,18 +3,22 @@ package com.school.haja.endpoint.rest.controller;
 import com.school.haja.endpoint.rest.mapper.ProjectionMapper;
 import com.school.haja.endpoint.rest.model.ProjectionRest;
 import com.school.haja.repository.model.Projection;
+import com.school.haja.repository.model.UserRole;
 import com.school.haja.service.ProjectionService;
+import com.school.haja.service.UserAuthService;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
 public class ProjectionController {
 
+  private final UserAuthService userAuthService;
   private final ProjectionService projectionService;
   private final ProjectionMapper projectionMapper;
 
@@ -25,9 +29,14 @@ public class ProjectionController {
   }
 
   @PutMapping("/projections")
-  public List<ProjectionRest> createOrUpdateProjections(@RequestBody List<ProjectionRest> toSave) {
+  public List<ProjectionRest> createOrUpdateProjections(
+      @RequestHeader(name = "X-User-Id", required = false) String userIdHeader,
+      @RequestBody List<ProjectionRest> toSave) {
+    userAuthService.validateUserAndRole(userIdHeader, UserRole.MANAGER);
+
     List<Projection> domainProjections = toSave.stream().map(projectionMapper::toDomain).toList();
     List<Projection> savedProjections = projectionService.saveAll(domainProjections);
+
     return savedProjections.stream().map(projectionMapper::toRest).toList();
   }
 }
