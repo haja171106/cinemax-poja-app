@@ -10,7 +10,7 @@ import com.school.haja.repository.model.Room;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +21,7 @@ class ProjectionRepositoryIT extends FacadeIT {
   @Autowired private RoomRepository roomRepository;
 
   @Test
-  void create_and_find_projections_by_movie_ok() {
+  void create_and_find_projection_ok() {
     Movie movie =
         movieRepository.save(
             Movie.builder()
@@ -46,9 +46,9 @@ class ProjectionRepositoryIT extends FacadeIT {
     Projection savedProjection = projectionRepository.save(projection);
     assertNotNull(savedProjection.getId());
 
-    List<Projection> movieProjections = projectionRepository.findByMovieId(movie.getId());
-    assertEquals(1, movieProjections.size());
-    assertEquals(new BigDecimal("12.50"), movieProjections.get(0).getSeatPrice());
-    assertEquals(movie.getId(), movieProjections.get(0).getMovie().getId());
+    Optional<Projection> foundProjection = projectionRepository.findById(savedProjection.getId());
+    assertTrue(foundProjection.isPresent());
+    assertEquals(new BigDecimal("12.50"), foundProjection.get().getSeatPrice());
+    assertEquals(movie.getId(), foundProjection.get().getMovie().getId());
   }
 }

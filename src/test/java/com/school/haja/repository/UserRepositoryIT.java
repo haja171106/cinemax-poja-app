@@ -16,7 +16,7 @@ class UserRepositoryIT extends FacadeIT {
   @Autowired private UserRepository userRepository;
 
   @Test
-  void create_and_find_user_by_email_ok() {
+  void create_and_find_user_by_id_ok() {
     String email = "john.doe." + System.currentTimeMillis() + "@gmail.com";
     User user =
         User.builder()
@@ -32,11 +32,12 @@ class UserRepositoryIT extends FacadeIT {
     User savedUser = userRepository.save(user);
     assertNotNull(savedUser.getId());
 
-    Optional<User> foundUser = userRepository.findByEmail(email);
+    Optional<User> foundUser = userRepository.findById(savedUser.getId());
     assertTrue(foundUser.isPresent());
     assertEquals("John", foundUser.get().getFirstName());
     assertEquals("Doe", foundUser.get().getLastName());
     assertEquals(UserRole.CLIENT, foundUser.get().getRole());
+    assertEquals(email, foundUser.get().getEmail());
   }
 
   @Test

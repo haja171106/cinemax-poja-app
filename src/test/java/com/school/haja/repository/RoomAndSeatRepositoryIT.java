@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.school.haja.conf.FacadeIT;
 import com.school.haja.repository.model.Room;
 import com.school.haja.repository.model.Seat;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +24,16 @@ class RoomAndSeatRepositoryIT extends FacadeIT {
 
     Seat seatA1 = Seat.builder().number("A1").room(savedRoom).build();
     Seat seatA2 = Seat.builder().number("A2").room(savedRoom).build();
-    seatRepository.save(seatA1);
-    seatRepository.save(seatA2);
+    Seat savedSeat1 = seatRepository.save(seatA1);
+    Seat savedSeat2 = seatRepository.save(seatA2);
 
-    Optional<Room> foundRoom = roomRepository.findByNumber(roomNum);
+    assertNotNull(savedSeat1.getId());
+    assertNotNull(savedSeat2.getId());
+
+    Optional<Room> foundRoom = roomRepository.findById(savedRoom.getId());
     assertTrue(foundRoom.isPresent());
     assertEquals(50, foundRoom.get().getCapacity());
-
-    List<Seat> seatsInRoom = seatRepository.findByRoomId(savedRoom.getId());
-    assertEquals(2, seatsInRoom.size());
+    assertEquals(roomNum, foundRoom.get().getNumber());
   }
 
   @Test

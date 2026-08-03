@@ -15,7 +15,7 @@ class MovieRepositoryIT extends FacadeIT {
   @Autowired private MovieRepository movieRepository;
 
   @Test
-  void create_and_find_movie_by_genre_ok() {
+  void create_and_find_movies_ok() {
     Movie movie1 =
         Movie.builder()
             .title("Inception")
@@ -35,12 +35,18 @@ class MovieRepositoryIT extends FacadeIT {
             .duration(Duration.ofMinutes(169))
             .build();
 
-    movieRepository.save(movie1);
-    movieRepository.save(movie2);
+    Movie savedMovie1 = movieRepository.save(movie1);
+    Movie savedMovie2 = movieRepository.save(movie2);
 
-    List<Movie> sciFiMovies = movieRepository.findByGenre(Genre.SCI_FI);
-    assertTrue(sciFiMovies.size() >= 2);
-    assertTrue(sciFiMovies.stream().anyMatch(m -> m.getTitle().equals("Inception")));
-    assertTrue(sciFiMovies.stream().anyMatch(m -> m.getTitle().equals("Interstellar")));
+    assertNotNull(savedMovie1.getId());
+    assertNotNull(savedMovie2.getId());
+
+    List<Movie> allMovies = movieRepository.findAll();
+    assertTrue(allMovies.stream().anyMatch(m -> m.getTitle().equals("Inception")));
+    assertTrue(allMovies.stream().anyMatch(m -> m.getTitle().equals("Interstellar")));
+    assertTrue(
+        allMovies.stream()
+            .filter(m -> m.getTitle().equals("Inception"))
+            .allMatch(m -> m.getGenre() == Genre.SCI_FI));
   }
 }

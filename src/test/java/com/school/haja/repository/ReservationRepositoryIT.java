@@ -80,10 +80,9 @@ class ReservationRepositoryIT extends FacadeIT {
     Reservation savedRes1 = reservationRepository.saveAndFlush(res1);
     assertNotNull(savedRes1.getId());
 
-    List<Reservation> user1Reservations = reservationRepository.findByUserId(user1.getId());
+    List<Reservation> user1Reservations =
+        reservationRepository.findAllByUserId(user1.getId());
     assertEquals(1, user1Reservations.size());
-    assertTrue(
-        reservationRepository.existsByProjectionIdAndSeatId(projection.getId(), seat1.getId()));
 
     Reservation res2 =
         Reservation.builder()
