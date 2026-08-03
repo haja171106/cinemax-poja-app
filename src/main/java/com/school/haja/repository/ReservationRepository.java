@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
   List<Reservation> findByUserId(UUID userId);
 
+  List<Reservation> findAllByUserId(UUID userId);
+
   boolean existsByProjectionIdAndSeatId(UUID projectionId, UUID seatId);
 }
